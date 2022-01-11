@@ -1,0 +1,60 @@
+<form action="" method="POST">
+    {% csrf_token %}
+<h1>Registration_form</h1>
+    FIRST_NAME:<input type="text" name="username" id="name"> <br>
+    MIDDLE_NAME:<input type="text" name="middlename" id="m_name"><br>
+
+    PASSWORD:<input type="text" name="password" id="spass"><br>
+    RE_ENTER PASSWORD:<input type="text" name="reenterpassword" id="respass"><br>
+    <button type="button" onclick="blog_savedetails()">data saved</button>
+
+    <!--<input type="submit">-->
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+function blog_savedetails(){
+	var name = document.getElementById("name").value
+	var middlename = document.getElementById("m_name").value
+	var password = document.getElementById("spass").value
+	var repassword = document.getElementById("respass").value
+	var csrf = $( "input[name$='csrfmiddlewaretoken']" ).val();
+	$.ajax({
+		type: 'POST',
+            url: '{% url 'company1user' %}',
+            data: {
+                'csrfmiddlewaretoken': csrf,
+                "name":name,
+                "middlename":middlename,
+                "password":password,
+                "repassword":repassword,
+                },
+            success: function (data) {
+            if(data.status == 1)
+            {
+            swal({
+  					title: data.message,
+				  	icon: "success",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'company1user' %}"
+					},3000);
+             }
+             else{
+				swal({
+  					title: data.message,
+				  	icon: "error",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'company1user' %}"
+					},3000);
+             }
+	},
+	 error: function (data) {
+                    console.log('fail', data);
+                }
+                });
+	}
+ </script>

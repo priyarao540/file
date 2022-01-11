@@ -1,0 +1,166 @@
+{%extends "base2.html"%}
+{% load static %}
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <h1>Details</h1>
+  emp_name:<input type="text" name="name" id="ename"><br> <!-- we need id only when we use ajex -->
+    emp_desc: <input type="text" name="desc" id="edes"><br>
+      <button type="button" onclick="blog_save()"> data saved</button>
+
+</form>
+    <!--<!DOCTYPE html>
+<html>
+<head>
+<style>
+img {
+  position: absolute ;
+  left: 0px;
+  top: 0px;
+  z-index: -1;
+}
+body {
+  background-color: white;
+  color: blue;
+}
+</style>
+</head>
+<body>
+<h1>The z-index Property</h1>
+
+<img src="w3css.gif" width="2000" height="2000" border="">
+
+<div class="container">
+<div class="a">
+    <div class="form-group">
+      <label for="">employee_name:</label>
+      <input type="text" class="form-control" id="name" name="name">
+    </div>
+    <div class="form-group">
+      <label for="">employee_desc:</label>
+      <input type="text" class="form-control" id="des" name="desc" >
+    </div>
+    <button type="button" onclick="blog_savedetails()"> employee data saved</button>
+
+    <button type="submit" class="btn btn-success">Submit</button>-->
+     <!--</div>
+</div>-->
+<!--    <input type="submit">-->
+<!--</form>-->
+
+<!--<img src="{% static 'images\chicago.jpg' %}" alt="BAND" width="1400" height="600">-->-->
+
+<table style="width:50%" border="1" bgcolor="yellow">
+
+    <tr>
+        <th>emp_name</th>
+    <th>emp_desc</th>
+      <th>Action</th>
+  </tr>
+    {% for x in emp_data %}
+    <tr>
+    <td>{{x.emp_name}}</td>
+    <td>{{x.emp_des}}</td>
+        <td><a onclick="blog_delete('{{x.id}}')">Delete</a></td>
+        <td><a href="{% url 'employee_edit_details' x.id %}">edit</a></td>
+    </tr>
+    {% endfor %}
+</table>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+function blog_save(){
+	var name = document.getElementById("ename").value
+	var des = document.getElementById("edes").value
+	var csrf = $( "input[name$='csrfmiddlewaretoken']" ).val();
+	$.ajax({
+		type: 'POST',
+            url: '{% url 'employee_details' %}',
+            data: {
+                'csrfmiddlewaretoken': csrf,
+                "name":name,
+                "des":des,
+            },
+            success: function (data) {
+            if(data.status == 1)
+            {
+            swal({
+  					title: data.message,
+				  	icon: "success",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'employee_details' %}"
+					},3000);
+             }
+             else{
+				swal({
+  					title: data.message,
+				  	icon: "error",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'employee_details' %}"
+					},3000);
+             }
+	},
+	 error: function (data) {
+                    console.log('fail', data);
+                }
+                });
+	}
+
+<!--delete ajax-->
+function blog_delete(id){
+alert(id)
+          swal({
+        title: "Are you sure want to delete blog?",
+        text: "",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        })
+        .then((willDelete) => {
+        if (willDelete) {
+        console.log("id",id)
+         	var csrf = $( "input[name$='csrfmiddlewaretoken']" ).val();
+	$.ajax({
+		type: 'GET',
+            url: '/employee_del_details/'+ id,
+            data: {
+
+            },
+            success: function (data) {
+            if(data.status == 1)
+            {
+            swal({
+  					title: data.message,
+				  	icon: "success",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'employee_details' %}"
+					},2000);
+             }
+             else{
+				swal({
+  					title: data.message,
+				  	icon: "error",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'employee_details' %}"
+					},2000);
+             }
+	},
+	error: function (data) {
+                    console.log('fail', data);
+                }
+	});
+        } else {
+
+        }
+        });
+
+	}
+
+</script>
+    {%endblock%}
+

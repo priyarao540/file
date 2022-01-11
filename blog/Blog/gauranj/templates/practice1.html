@@ -1,0 +1,135 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css\style.css' %}">
+
+<form action="" method="POST">
+    {% csrf_token %}
+<h1>Login form </h1>
+<!--    <h1 style="background-color:DodgerBlue;">-->
+    name:  <input type="text" name="name1" id="namee1"><br>
+    middlename: <input type="text" name="middlename1" id="mname"><br>
+    lastname:   <input type="text" name="lastname1" id="lname"><br>
+    <button type="button" onclick="save_practicee()">save data</button>
+
+</form>
+
+<table style="width:50%" border="1">
+  <tr>
+    <th>name1</th>
+    <th>middlename1</th>
+    <th>lastname1</th>
+      <th>Action</th>
+      <th>Action</th>
+  </tr>
+    {% for x in data %}
+    <tr>
+        <td>{{x.name}}</td>
+        <td>{{x.middlename}}</td>
+        <td>{{x.lastname}}</td>
+<!--        <td><a onclick="blog_delete({{x.id}})">Delete</a></td>-->
+        <td><a href="{% url 'edit_pra' x.id %}">edit</a></td>
+<!--        <td><a href="{% url 'del_pra' x.id %}">delete</a></td>-->
+        <td><a onclick="blog_delete({{x.id}})">Delete</a></td>
+
+
+    </tr>
+    {% endfor %}
+</table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+function save_practicee(){
+	var name = document.getElementById("namee1").value
+	var middlename = document.getElementById("mname").value
+	var lastname = document.getElementById("lname").value
+	var csrf = $( "input[name$='csrfmiddlewaretoken']" ).val();
+	$.ajax({
+		type: 'POST',
+            url: '{% url 'practicee12' %}',
+            data: {
+                'csrfmiddlewaretoken': csrf,
+                "myname":name,
+                "mymiddlename":middlename,
+                "mylastname":lastname,
+
+
+
+            },
+            success: function (data) {
+            if(data.status == 1)
+            {
+            swal({
+  					title: data.message,
+				  	icon: "success",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'practicee12' %}"
+					},5000);
+             }
+             else{
+				swal({
+  					title: data.message,
+				  	icon: "error",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'practicee12' %}"
+					},5000);
+             }
+	},
+	 error: function (data) {
+                    console.log('fail', data);
+                }
+                });
+     }
+function blog_delete(id){
+alert(id)
+          swal({
+        title: "Are you sure want to delete blog?",
+        text: "",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        })
+        .then((willDelete) => {
+        if (willDelete) {
+        console.log("id",id)
+         	var csrf = $( "input[name$='csrfmiddlewaretoken']" ).val();
+	$.ajax({
+		type: 'GET',
+            url: '/del_pra/'+ id,
+            data: {
+
+            },
+            success: function (data) {
+            if(data.status == 1)
+            {
+            swal({
+  					title: data.message,
+				  	icon: "success",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'practicee12' %}"
+					},2000);
+             }
+             else{
+				swal({
+  					title: data.message,
+				  	icon: "error",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'practicee12' %}"
+					},2000);
+             }
+	},
+	 error: function (data) {
+                    console.log('fail', data);
+                }
+	});
+        } else {
+
+        }
+        });
+
+	}
+
+</script>

@@ -1,0 +1,10 @@
+{%extends "base dropdownbar.html"%}
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <h1>Login</h1>
+    blog_name:<input type="text" name="blogname"><br>
+    blog_desc: <input type="text" name="blogdesc"><br>
+    <input type="submit">
+</form>
+{% endblock %}

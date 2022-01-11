@@ -1,0 +1,148 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css\style.css' %}">
+<form action="" method="POST">
+    {% csrf_token %}
+<h1>Registration_form</h1>
+    <!-- FOR USING AJEX WE HAVE TO PUT ID AS BELOW -->
+    NAME:<input type="text" name="name" id="name"> <br>
+    MIDDLE_NAME:<input type="text" name="middle_name" id="m_name"><br>
+    LAST_NAME:<input type="text" name="last_name" id="l_name"><br>
+    PASSWORD:<input type="password" name="password" id="pass"><br>
+    RE_ENTER PASSWORD:<input type="password" name="reenterpassword" id="repass"><br>
+    Dateofbirth:<input type="date" name="dateofbirth" id="dob"><br>
+   <button type="button" onclick="blog_save()">save data</button>
+</form>
+<img src="{% static 'images\flower.jpg' %}" alt="">
+<!--    <script src="{% static 'js\demo.js' %}">-->
+
+
+<!--    </script>-->
+<table style="width:50%" border="1">
+    <tr>
+      <th>username</th>
+      <th>middlename</th>
+      <th>last_name</th>
+      <th>password</th>
+      <th>reenterpassword</th>
+      <th>Action</th>
+  </tr>
+    {% for x in data %}
+    <tr>
+        <td>{{x.name}}</td>
+        <td>{{x.middle_name}}</td>
+        <td>{{x.last_name}}</td>
+        <td>{{x.password}}</td>
+        <td>{{x.reenterpassword}}</td>
+        <td><a onclick="blog_delete({{x.id}})">Delete</a></td>
+        <td><a href="{% url 'editdetails' x.id %}">edit</a></td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+<!-- save blog through sweetalert -->
+function blog_save(){
+	var name = document.getElementById("name").value
+	var middle_name = document.getElementById("m_name").value
+	var lastname = document.getElementById("l_name").value
+	var password = document.getElementById("pass").value
+	var repassword = document.getElementById("repass").value
+	var dateofbirth = document.getElementById("dob").value
+	var csrf = $( "input[name$='csrfmiddlewaretoken']" ).val();
+	$.ajax({
+		type: 'POST',
+            url: '{% url 'comdetails' %}',
+            data: {
+                'csrfmiddlewaretoken': csrf,
+                "name":name,
+                "middlename":middle_name,
+                "lastname":lastname,
+                "password":password,
+                "repassword":repassword,
+                "dateofbirth":dateofbirth,
+
+            },
+            success: function (data) {
+            if(data.status == 1)
+            {
+            swal({
+  					title: data.message,
+				  	icon: "success",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'comdetails' %}"
+					},3000);
+             }
+             else{
+				swal({
+  					title: data.message,
+				  	icon: "error",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'comdetails' %}"
+					},3000);
+             }
+	},
+	 error: function (data) {
+                    console.log('fail', data);
+                }
+                });
+	}
+<!-- delete blog through sweetalert -->
+
+function blog_delete(id){
+alert(id)
+          swal({
+        title: "Are you sure want to delete blog?",
+        text: "",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        })
+        .then((willDelete) => {
+        if (willDelete) {
+        console.log("id",id)
+         	var csrf = $( "input[name$='csrfmiddlewaretoken']" ).val();
+	$.ajax({
+		type: 'GET',
+            url: '/deldetails/'+ id,
+            data: {
+
+            },
+            success: function (data) {
+            if(data.status == 1)
+            {
+            swal({
+  					title: data.message,
+				  	icon: "success",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'comdetails' %}"
+					},2000);
+             }
+             else{
+				swal({
+  					title: data.message,
+				  	icon: "error",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'comdetails' %}"
+					},2000);
+             }
+	},
+	 error: function (data) {
+                    console.log('fail', data);
+                }
+	});
+        } else {
+
+        }
+        });
+
+	}
+
+</script>

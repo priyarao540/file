@@ -1,0 +1,55 @@
+<form action="" method="POST">
+    {% csrf_token %}
+<h1>Login form</h1>
+    name:<input type="text" name="name1" value="{{data.name}}" id="ename"> <br>
+    middlename:<input type="text" name="middlename1" value="{{data.mnane}}" id="edes"> <br>
+    lastname:<input type="text" name="lastname1" value="{{data.lname}}" id="lastname"> <br>
+         <button type="button" onclick="edit_emplaoye('{{data.id}}')">edit save</button>
+
+<!--   <input type="submit">-->
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+function edit_emplaoye(id){
+	var name = document.getElementById("ename").value
+	var mname = document.getElementById("edes").value
+	var lname = document.getElementById("lastname").value
+	var csrf = $( "input[name$='csrfmiddlewaretoken']" ).val();
+	$.ajax({
+		type: 'POST',
+            url: '/edit_pra/'+id,
+            data: {
+                'csrfmiddlewaretoken': csrf,
+                "name1":name,
+                "namemiddle":mname,
+                "namelast":lname,
+            },
+            success: function (data) {
+            if(data.status == 1)
+            {
+            swal({
+  					title: data.message,
+				  	icon: "success",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'practicee12' %}"
+					},3000);
+             }
+             else{
+				swal({
+  					title: data.message,
+				  	icon: "error",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'practicee12' %}"
+					},3000);
+             }
+	},
+	 error: function (data) {
+                    console.log('fail', data);
+                }
+                });
+	}
+    </script>

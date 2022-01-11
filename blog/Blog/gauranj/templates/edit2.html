@@ -1,0 +1,55 @@
+<form action="" method="POST">
+    {% csrf_token %}
+<h1>Registration_form</h1>
+    NAME:<input type="text" name="username" value="{{emp_data.name}}" id="ename"> <br>
+    MIDDLE_NAME:<input type="text" name="middle_name" value="{{emp_data.middle_name}}" id="edes"><br>
+    LAST_NAME:<input type="text" name="last_name" value="{{emp_data.emp_lastname}}"><br>
+    PASSWORD:<input type="password" name="password" value="{{emp_data.password}}"><br>
+    RE_ENTER PASSWORD:<input type="password" name="reenterpassword" value="{{emp_data.reenterpassword}}"><br>
+    Dateofbirth:<input type="date" name="dateofbirth"><br>
+     <button type="button" onclick="edit_emplaoye('{{emp_data.id}}')">edit save</button>
+    <input type="submit">
+</form>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+function edit_emplaoye(id){
+	var name = document.getElementById("ename").value
+	var des = document.getElementById("edes").value
+	var csrf = $( "input[name$='csrfmiddlewaretoken']" ).val();
+	$.ajax({
+		type: 'POST',
+            url: '/editdetails/'+id,
+            data: {
+                'csrfmiddlewaretoken': csrf,
+                "name":name,
+                "desc":des,
+            },
+            success: function (data) {
+            if(data.status == 1)
+            {
+            swal({
+  					title: data.message,
+				  	icon: "success",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'comdetails' %}"
+					},3000);
+             }
+             else{
+				swal({
+  					title: data.message,
+				  	icon: "error",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'comdetails' %}"
+					},3000);
+             }
+	},
+	 error: function (data) {
+                    console.log('fail', data);
+                }
+                });
+	}
+    </script>

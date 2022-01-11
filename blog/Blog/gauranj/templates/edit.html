@@ -1,0 +1,52 @@
+<form action="" method="POST">
+    {% csrf_token %}
+    <h1>Details</h1>
+    emp_name:<input type="text" id="ename" value="{{emp_data.emp_name}}"><br>
+    emp_desc: <input type="text" id="edes" value="{{ emp_data.emp_des}}"><br>
+<!--    <input type="submit" >-->
+    <button type="button" onclick="edit_emplaoye('{{emp_data.id}}')">edit save</button>
+</form>
+
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+function edit_emplaoye(id){
+	var name = document.getElementById("ename").value
+	var des = document.getElementById("edes").value
+	var csrf = $( "input[name$='csrfmiddlewaretoken']" ).val();
+	$.ajax({
+		type: 'POST',
+            url: '/employee_edit_details/'+id,
+            data: {
+                'csrfmiddlewaretoken': csrf,
+                "name":name,
+                "desc":des,
+            },
+            success: function (data) {
+            if(data.status == 1)
+            {
+            swal({
+  					title: data.message,
+				  	icon: "success",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'employee_details' %}"
+					},3000);
+             }
+             else{
+				swal({
+  					title: data.message,
+				  	icon: "error",
+				});
+				window.setTimeout(function(){
+  				window.location.href = "{% url 'employee_details' %}"
+					},3000);
+             }
+	},
+	 error: function (data) {
+                    console.log('fail', data);
+                }
+                });
+	}
+    </script>
