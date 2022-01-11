@@ -1,1 +1,3 @@
-SELECT * FROM public.country;
+SELECT * FROM public.country
+limit 100
+;
